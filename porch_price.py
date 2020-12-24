@@ -67,7 +67,7 @@ def get_price_content(session, url_slug, apply_zip_codes, csrf_token):
             del item_data['selectedProDTOs']
             del item_data['calculatorFaqDTOs']
             content = json.dumps(item_data)
-            Price.objects(zipcode=code, url_slug=url_slug).update_one(set__content=content, upsert=True)
+            Price.objects(zipcode=code, url_slug=url_slug).update_one(set__content=content, set__blank=False, upsert=True)
             time.sleep(0.8)
     except Exception as ex:
         print("*********Error*************")
@@ -76,7 +76,7 @@ def get_price_content(session, url_slug, apply_zip_codes, csrf_token):
 
 def start_scrape(url_slug):
     try:
-        prices = Price.objects.filter(url_slug=url_slug, content=None).limit(1500)
+        prices = Price.objects.filter(url_slug=url_slug, blank=True).limit(1500)
         if prices.count() == 0:
             CostLink.objects(url_slug=url_slug).update_one(status='Done', upsert=True)
             return
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         print("***********Start************")
         print(cost_link.url_slug, datetime.datetime.now())
         start_scrape(cost_link.url_slug)
-        prices = Price.objects.filter(url_slug=cost_link.url_slug, content=None).count()
+        prices = Price.objects.filter(url_slug=cost_link.url_slug, blank=True).count()
         if prices:
             cost_link.status = 'In-Progress'
             cost_link.save()
