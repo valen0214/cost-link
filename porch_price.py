@@ -68,7 +68,7 @@ def get_price_content(session, url_slug, apply_zip_codes, csrf_token):
             del item_data['calculatorFaqDTOs']
             content = json.dumps(item_data)
             Price.objects(zipcode=code, url_slug=url_slug).update_one(set__content=content, set__blank=False, upsert=True)
-            time.sleep(0.3)
+            time.sleep(0.8)
     except Exception as ex:
         print("*********Error*************")
         print(ex)
