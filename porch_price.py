@@ -177,14 +177,6 @@ if __name__ == "__main__":
         print("***********Start************")
         print(cost_link.url_slug, datetime.datetime.now())
         start_scrape(cost_link.url_slug)
-        prices = Price.objects.filter(url_slug=cost_link.url_slug, blank=True).count()
-        if prices:
-            cost_link.status = 'In-Progress'
-            cost_link.save()
-            break
-        else:
-            cost_link.status = 'Done'
-            cost_link.save()
 
         time.sleep(30)
         print(cost_link.url_slug, datetime.datetime.now())
