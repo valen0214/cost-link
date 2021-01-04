@@ -76,21 +76,12 @@ def get_price_content(session, url_slug, apply_zip_codes, csrf_token):
 
 def start_scrape(url_slug):
     try:
-        prices = Price.objects.filter(url_slug=url_slug)
-
-        index = 0
-        apply_zip_codes = []
-        for item in prices:
-            if index > 1500:
-                break
-            if item.blank == True:
-                apply_zip_codes.append(item.zipcode)
-                index = index + 1
-
-        if len(apply_zip_codes) == 0:
+        prices = Price.objects.filter(url_slug=url_slug, blank=True).limit(1500)
+        if prices.count() == 0:
             CostLink.objects(url_slug=url_slug).update_one(status='Done', upsert=True)
             return
         CostLink.objects(url_slug=url_slug).update_one(status='In-Progress', upsert=True)
+        apply_zip_codes = list(map(lambda x: x.zipcode, prices))
         
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:83.0) Gecko/20100101 Firefox/83.0',
