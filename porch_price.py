@@ -83,7 +83,7 @@ def start_scrape(url_slug):
         for item in prices:
             if index > 1500:
                 break
-            if item.blank:
+            if item.blank == True:
                 apply_zip_codes.append(item.zipcode)
                 index = index + 1
 
