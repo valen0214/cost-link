@@ -79,7 +79,7 @@ def get_price_content(session, url_slug, apply_zip_codes, csrf_token):
             content = json.dumps(item_data)
             Price.objects(zipcode=int(code), url_slug=url_slug).update_one(set__content=content, set__blank=False, upsert=True)
             PriceStatus.objects(machine=machine_name).update_one(set__zipcode=code, set__url_slug=url_slug, upsert=True)
-            time.sleep(0.8)
+            time.sleep(0.5)
     except Exception as ex:
         print("*********Error*************")
         print(ex)
